@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.game-container {
+    width: 800px;
+    height: 600px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.blue-background {
+    width: 800px;
+    height: 270px;
+    background-color: blue;
+}
+
+.green-background {
+    width: 800px;
+    height: 20px;
+    background-color: green;
+}
+
+.dark-gray-background {
+    width: 800px;
+    height: 270px;
+    background-color: darkgray;
+}
+
+.finish-line, .start-line {
+    width: 800px;
+    height: 20px;
+    background-color: green;
+}
+
+#frogger-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Place the canvas above the background */
+}

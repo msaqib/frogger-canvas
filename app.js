@@ -9,20 +9,10 @@ img1.src = 'assets/26755.png'
 const img2 = new Image()
 img2.src = 'assets/frogger.png'
 
-const spwidth2 = 170 - 75
-const spheight2 = 200 - 46
-
-const arrX = [75, 263, 455, 69, 261, 462]
-const arrY = [46, 46, 46, 235, 235, 235]
 
 let frogLocation = {
     x: 400,
     y: 580
-}
-
-let carLocation = {
-    x: 30,
-    y: 530
 }
 
 let scale2 = 1
@@ -32,37 +22,74 @@ let frame = 0
 let px = 0
 
 
-    const frogX = 54 
-    const frogY = 152
-    const frogWidth = 94 - frogX
-    const frogHeight = 182 - frogY
+const frogX = 54 
+const frogY = 152
+const frogWidth = 94 - frogX
+const frogHeight = 182 - frogY
 
-    const frogAspectRatio = frogHeight / frogWidth
+const frogAspectRatio = frogHeight / frogWidth
 
-    const frogShowWidth = 20 / frogAspectRatio
-    const frogShowHeight = 20
+const frogShowWidth = 20 / frogAspectRatio
+const frogShowHeight = 20
 
-    const carX = 408
-    const carY = 175
-    const carWidth = 490 - carX
-    const carHeight = 220 - carY
+const carX = 408
+const carY = 175
+const carWidth = 490 - carX
+const carHeight = 220 - carY
 
-    const carAspectRatio = carHeight / carWidth
-    const carShowWidth = 40 / carAspectRatio
-    const carShowHeight = 40
+const carAspectRatio = carHeight / carWidth
+const carShowWidth = 40 / carAspectRatio
+const carShowHeight = 40
+
+const spacing = Math.floor((CANWIDTH - 3 * carShowWidth) / 2)
+
+let row1 = []
+let row1Shadow = []
+for (let i = 0 ; i < 3 ; i++) {
+    row1[i] = {x: i * spacing + i * carShowWidth, y: 580 - carShowHeight}
+}
+
+let car1 = {
+    x: 800 - carShowWidth,
+    y: 580 - carShowHeight,
+    speed: 1
+}
+
+let car1Shadow = {
+    x: car1.x + CANWIDTH,
+    y: car1.y
+}
+
+let car2 = {
+    x: carShowWidth,
+    y: 580 - carShowHeight,
+    speed: 1
+}
+
 
 function animate2() {
+    //car1.x = car1.x - car1.speed
+    //car1Shadow.x = car1Shadow.x - car1.speed
+    //car2.x = car2.x + car2.speed
     ctx2.clearRect(0, 0, CANWIDTH, CANHEIGHT)
-    //ctx.fillRect(x, 50, 100, 100)
-    //x++
-    // Draw from the top left corner of the canvas
     
-
-
     let column = frame % 3
     ctx2.drawImage(img2, frogX, frogY, frogWidth, frogHeight, frogLocation.x, frogLocation.y, frogShowWidth, frogShowHeight)
-    ctx2.drawImage(img1, carX, carY, carWidth, carHeight, carLocation.x, carLocation.y, carShowWidth, carShowHeight)
-    
+    //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, car1.x, car1.y, carShowWidth, carShowHeight)
+    //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, car1Shadow.x, car1Shadow.y, carShowWidth, carShowHeight)
+    row1.forEach( car => ctx2.drawImage(img1, carX, carY, carWidth, carHeight, car.x, car.y, carShowWidth, carShowHeight))
+    /*if (car1.x < -carShowWidth) {
+        car1.x = car1Shadow.x + CANWIDTH
+    }
+    else if (car1Shadow.x < -carShowWidth) {
+        car1Shadow.x = car1.x + CANWIDTH
+    }*/
+    ctx2.save()
+
+    ctx2.rotate(Math.PI)
+    ctx2.drawImage(img1, carX, carY, carWidth, carHeight, -car2.x, -car2.y, carShowWidth, carShowHeight)
+    ctx2.restore()
+
     requestAnimationFrame(animate2)
     
 }

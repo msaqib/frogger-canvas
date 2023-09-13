@@ -41,12 +41,18 @@ const carAspectRatio = carHeight / carWidth
 const carShowWidth = 40 / carAspectRatio
 const carShowHeight = 40
 
-const spacing = Math.floor((CANWIDTH - 3 * carShowWidth) / 2)
+const spacing = Math.floor((CANWIDTH - 2 * carShowWidth) / 2)
+
+const speed = 1
 
 let row1 = []
-let row1Shadow = []
-for (let i = 0 ; i < 3 ; i++) {
+for (let i = 0 ; i < 2 ; i++) {
     row1[i] = {x: i * spacing + i * carShowWidth, y: 580 - carShowHeight}
+}
+
+let row2 = []
+for (let i = 0 ; i < 2 ; i++) {
+    row2[i] = {x: i * spacing + (i + 1) * carShowWidth, y: 580 - carShowHeight}
 }
 
 let car1 = {
@@ -78,6 +84,8 @@ function animate2() {
     //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, car1.x, car1.y, carShowWidth, carShowHeight)
     //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, car1Shadow.x, car1Shadow.y, carShowWidth, carShowHeight)
     row1.forEach( car => ctx2.drawImage(img1, carX, carY, carWidth, carHeight, car.x, car.y, carShowWidth, carShowHeight))
+    
+    
     /*if (car1.x < -carShowWidth) {
         car1.x = car1Shadow.x + CANWIDTH
     }
@@ -87,9 +95,22 @@ function animate2() {
     ctx2.save()
 
     ctx2.rotate(Math.PI)
-    ctx2.drawImage(img1, carX, carY, carWidth, carHeight, -car2.x, -car2.y, carShowWidth, carShowHeight)
+    //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, -car2.x, -car2.y, carShowWidth, carShowHeight)
+    row2.forEach( car => ctx2.drawImage(img1, carX, carY, carWidth, carHeight, -car.x, -car.y, carShowWidth, carShowHeight))
     ctx2.restore()
 
+    row1 = row1.map(car => {
+        return {
+            x: car.x - speed < -carShowWidth ? CANWIDTH : car.x - speed, 
+            y: car.y
+        }
+    })
+    row2 = row2.map(car => {
+        return {
+            x: car.x + speed - carShowWidth > CANWIDTH ? 0 : car.x + speed, 
+            y: car.y
+        }
+    })
     requestAnimationFrame(animate2)
     
 }

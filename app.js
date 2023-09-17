@@ -60,12 +60,12 @@ const speed2 = 1.5
 
 let row1 = []
 for (let i = 0 ; i < 2 ; i++) {
-    row1[i] = {x: i * spacing1 + i * car1ShowWidth, y: 580 - car1ShowHeight}
+    row1[i] = {x: CANWIDTH - (i * spacing1 + (i + 1) * car1ShowWidth), y: 580 - car1ShowHeight}
 }
 
 let row2 = []
 for (let i = 0 ; i < 2 ; i++) {
-    row2[i] = {x: i * spacing1 + (i + 1) * car1ShowWidth, y: 580 - car1ShowHeight}
+    row2[i] = {x: CANWIDTH - (i * spacing1 + (i + 1) * car1ShowWidth), y: 20 + car1ShowHeight}
 }
 
 let row3 = []
@@ -78,15 +78,10 @@ for (let i = 0 ; i < 2 ; i++) {
     row4[i] = {x: i * spacing2 + (i + 1) * car2ShowWidth, y: 500 - car2ShowHeight}
 }
 
-console.log(car2ShowWidth, car2Width)
-console.log(row3)
-console.log(row4)
-
-console.log(row1, row2)
 
 let car1 = {
-    x: 800 - car1ShowWidth,
-    y: 580 - car1ShowHeight,
+    x: CANWIDTH - car1ShowWidth,
+    y: CANHEIGHT - 20 - car1ShowHeight,
     speed: 1
 }
 
@@ -96,74 +91,80 @@ let car1Shadow = {
 }
 
 let car2 = {
-    x: car1ShowWidth,
-    y: 580 - car1ShowHeight,
-    speed: 1
+    x: CANWIDTH - car1ShowWidth,
+    y: car1ShowHeight + 20
 }
 
 
 function animate2() {
-    //car1.x = car1.x - car1.speed
-    //car1Shadow.x = car1Shadow.x - car1.speed
-    //car2.x = car2.x + car2.speed
     ctx2.clearRect(0, 0, CANWIDTH, CANHEIGHT)
     
     let column = frame % 3
     ctx2.drawImage(img2, frogX, frogY, frogWidth, frogHeight, frogLocation.x, frogLocation.y, frogShowWidth, frogShowHeight)
-    //ctx2.drawImage(img1, car1X, car1Y, carWidth, carHeight, car1.x, car1.y, carShowWidth, carShowHeight)
-    //ctx2.drawImage(img1, car1X, car1Y, carWidth, carHeight, car1Shadow.x, car1Shadow.y, carShowWidth, carShowHeight)
     row1.forEach( car => ctx2.drawImage(img1, car1X, car1Y, car1Width, car1Height, car.x, car.y, car1ShowWidth, car1ShowHeight))
     
-    
-    /*if (car1.x < -carShowWidth) {
-        car1.x = car1Shadow.x + CANWIDTH
-    }
-    else if (car1Shadow.x < -carShowWidth) {
-        car1Shadow.x = car1.x + CANWIDTH
-    }*/
     ctx2.save()
-
+    
     ctx2.rotate(Math.PI)
-    //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, -car2.x, -car2.y, carShowWidth, carShowHeight)
-    row2.forEach( car => ctx2.drawImage(img1, car1X, car1Y, car1Width, car1Height, -car.x, -car.y, car1ShowWidth, car1ShowHeight))
+    ctx2.translate(-CANWIDTH, -CANHEIGHT)
+    row2.forEach( car => ctx2.drawImage(img1, car1X, car1Y, car1Width, car1Height, car.x, car.y, car1ShowWidth, car1ShowHeight))
     ctx2.restore()
 
-    row1 = row1.map(car => {
-        return {
-            x: car.x - speed1 < -car1ShowWidth ? CANWIDTH : car.x - speed1, 
-            y: car.y
-        }
-    })
-    row2 = row2.map(car => {
-        return {
-            x: car.x + speed1 - car1ShowWidth > CANWIDTH ? 0 : car.x + speed1, 
-            y: car.y
-        }
-    })
+    row1 = row1.map((car) => checkAndReset(car, speed1, car1ShowWidth))
+    row2 = row2.map((car) => checkAndReset(car, speed1, car1ShowWidth))
 
-    row3.forEach( car => ctx2.drawImage(img1, car2X, car2Y, car2Width, car2Height, car.x, car.y, car2ShowWidth, car2ShowHeight))
-        ctx2.save()
+    // row3.forEach( car => ctx2.drawImage(img1, car2X, car2Y, car2Width, car2Height, car.x, car.y, car2ShowWidth, car2ShowHeight))
+    //     ctx2.save()
 
-    ctx2.rotate(Math.PI)
-    //ctx2.drawImage(img1, carX, carY, carWidth, carHeight, -car2.x, -car2.y, carShowWidth, carShowHeight)
-    row4.forEach( car => ctx2.drawImage(img1, car2X, car2Y, car2Width, car2Height, -car.x, -car.y, car2ShowWidth, car2ShowHeight))
-    ctx2.restore()
+    // ctx2.rotate(Math.PI)
+    // ctx2.translate(-CANWIDTH, -CANHEIGHT)
+    // row4.forEach( car => ctx2.drawImage(img1, car2X, car2Y, car2Width, car2Height, -car.x, -car.y, car2ShowWidth, car2ShowHeight))
+    // ctx2.restore()
 
-    row3 = row3.map(car => {
-        return {
-            x: car.x - speed2 < -car2ShowWidth ? CANWIDTH : car.x - speed2, 
-            y: car.y
-        }
-    })
-    row4 = row4.map(car => {
-        return {
-            x: car.x + speed2 - car2ShowWidth > CANWIDTH ? 0 : car.x + speed2, 
-            y: car.y
-        }
-    })
+    // row3 = row3.map(car => {
+    //     return {
+    //         x: car.x - speed2 < -car2ShowWidth ? CANWIDTH : car.x - speed2, 
+    //         y: car.y
+    //     }
+    // })
+    // row4 = row4.map(car => {
+    //     return {
+    //         x: car.x + speed2 - car2ShowWidth > CANWIDTH ? 0 : car.x + speed2, 
+    //         y: car.y
+    //     }
+    // })
 
     requestAnimationFrame(animate2)
     
 }
 
+function checkAndReset(vehicle, speed, showWidth) {
+    return {
+        x: vehicle.x - speed < -showWidth ? CANWIDTH : vehicle.x - speed,
+        y: vehicle.y
+    }
+}
+
 animate2()
+
+function animate3() {
+    //car1.x = car1.x - car1.speed
+    //car1Shadow.x = car1Shadow.x - car1.speed
+    //car2.x = car2.x + car2.speed
+    ctx2.clearRect(0, 0, CANWIDTH, CANHEIGHT)
+    car1.x -= speed1
+    if (car1.x < -car1ShowWidth) {
+        car1.x = CANWIDTH
+    }
+    let column = frame % 3
+    ctx2.drawImage(img2, frogX, frogY, frogWidth, frogHeight, frogLocation.x, frogLocation.y, frogShowWidth, frogShowHeight)
+    ctx2.drawImage(img1, car1X, car1Y, car1Width, car1Height, car1.x, car1.y, car1ShowWidth, car1ShowHeight)
+    ctx2.save()
+    ctx2.rotate(Math.PI)
+    ctx2.translate(-CANWIDTH, -CANHEIGHT)
+    ctx2.drawImage(img1, car1X, car1Y, car1Width, car1Height, car2.x, car2.y, car1ShowWidth, car1ShowHeight)
+    ctx2.restore()
+    requestAnimationFrame(animate3)
+}
+
+//animate3()

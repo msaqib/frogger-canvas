@@ -8,6 +8,7 @@ body {
     height: 600px;
     position: relative;
     margin: 0 auto;
+    margin-top: 10px;
 }
 
 .blue-background {

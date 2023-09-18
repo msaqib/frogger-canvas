@@ -8,6 +8,8 @@ const img1 = new Image()
 img1.src = 'assets/26755.png'
 const img2 = new Image()
 img2.src = 'assets/frogger.png'
+const img3 = new Image()
+img3.src = 'assets/logs.png'
 
 
 let frogLocation = {
@@ -117,6 +119,33 @@ let car2 = {
     y: car1ShowHeight + 20
 }
 
+const logX = 16
+const logY = 258
+const logWidth = 366 - 16
+const logHeight = 314 - 258
+
+const logAspectRatio = logHeight / logWidth
+const logShowHeight = 40
+const logShowWidth = logShowHeight / logAspectRatio
+
+const logSpeed = 1
+
+let logLocations = []
+
+const logSpacing = Math.floor((CANWIDTH - 2*logShowWidth) / 2)
+
+const stagger = 200
+
+for (let i = 0 ; i < 3 ; i ++) {
+    logLocations.push({x: i*stagger, y: 20 + i * 80})
+    logLocations.push({x: logShowWidth + logSpacing + i*stagger, y: 20 + i * 80})
+}
+
+for (let i = 0 ; i < 3 ; i++) {
+    logLocations.push({x: CANWIDTH - logShowWidth - i * stagger, y: 60 + i * 80}) 
+    logLocations.push({x: CANWIDTH - 2*logShowWidth - logSpacing - i*stagger, y: 60 + i * 80})
+}
+
 
 function animate2() {
     ctx2.clearRect(0, 0, CANWIDTH, CANHEIGHT)
@@ -155,6 +184,20 @@ function animate2() {
 
     row5 = row5.map((truck) => incrementCheckAndReset(truck, speed3, truckShowWidth))
     row6 = row6.map((truck) => incrementCheckAndReset(truck, speed3, truckShowWidth))
+
+    logLocations.forEach(location => ctx2.drawImage(img3, logX, logY, logWidth, logHeight, location.x, location.y, logShowWidth, logShowHeight))
+
+    logLocations = logLocations.map((location, index) => {
+        
+        let newLocation = location
+        if (Math.floor(index/6) === 0) {
+            newLocation.x = newLocation.x + logSpeed > CANWIDTH ? -logShowWidth : newLocation.x + logSpeed
+        }
+        else {
+            newLocation.x = newLocation.x - logSpeed < -logShowWidth ? CANWIDTH : newLocation.x - logSpeed
+        }
+        return newLocation
+    })
     requestAnimationFrame(animate2)
     
 }

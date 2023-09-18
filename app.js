@@ -146,6 +146,29 @@ for (let i = 0 ; i < 3 ; i++) {
     logLocations.push({x: CANWIDTH - 2*logShowWidth - logSpacing - i*stagger, y: 60 + i * 80})
 }
 
+document.addEventListener('keydown', handleKey)
+function handleKey(e) {
+    switch(e.key) {
+    case 'ArrowRight':
+        if (frogLocation.x < CANWIDTH - frogShowWidth) 
+            frogLocation.x+=20
+        break
+    
+    case 'ArrowLeft':
+        if (frogLocation.x > 0)
+            frogLocation.x-=20
+        break
+    case 'ArrowUp':
+        if (frogLocation.y > 0) 
+            frogLocation.y -= 20
+        break
+
+    case 'ArrowDown':
+        if(frogLocation.y < CANHEIGHT - frogShowHeight)
+            frogLocation.y += 20
+        break
+    }
+}
 
 function animate2() {
     ctx2.clearRect(0, 0, CANWIDTH, CANHEIGHT)

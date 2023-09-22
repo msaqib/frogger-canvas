@@ -232,17 +232,17 @@ function animate2() {
         return
     if (isFrogWon())
         return
-    if (row1.some((car) => isFrogHit1(car, car1ShowWidth, car1ShowHeight)))
+    if (row1.some((car) => isFrogHit(car, car1ShowWidth, car1ShowHeight)))
         return
-    if (row2.some((car) => isFrogHit2(convertCoord(car, car1ShowWidth, car1ShowHeight), car1ShowWidth, car1ShowHeight)))
+    if (row2.some((car) => isFrogHit(convertCoord(car, car1ShowWidth, car1ShowHeight), car1ShowWidth, car1ShowHeight)))
         return
-    if (row3.some((car) => isFrogHit1(car, car2ShowWidth, car2ShowHeight)))
+    if (row3.some((car) => isFrogHit(car, car2ShowWidth, car2ShowHeight)))
         return
-    if (row4.some((car) => isFrogHit2(convertCoord(car, car2ShowWidth, car2ShowHeight), car2ShowWidth, car2ShowHeight)))
+    if (row4.some((car) => isFrogHit(convertCoord(car, car2ShowWidth, car2ShowHeight), car2ShowWidth, car2ShowHeight)))
         return
-    if (row5.some((truck) => isFrogHit1(truck, truckShowWidth, truckShowHeight)))
+    if (row5.some((truck) => isFrogHit(truck, truckShowWidth, truckShowHeight)))
         return
-    if (row6.some((truck) => isFrogHit2(convertCoord(truck, truckShowWidth, truckShowHeight), truckShowWidth, truckShowHeight)))
+    if (row6.some((truck) => isFrogHit(convertCoord(truck, truckShowWidth, truckShowHeight), truckShowWidth, truckShowHeight)))
         return
     requestAnimationFrame(animate2)
     
@@ -288,25 +288,12 @@ function isFrogWon() {
         return false
 }
 
-function isFrogHit1(vehicle, vehicleWidth, vehicleHeight) {
-    if (frogLocation.y >= vehicle.y && 
-        frogLocation.y + frogShowHeight <= vehicle.y + vehicleHeight &&
-        frogLocation.x + frogShowWidth - 2 >= vehicle.x &&
-        frogLocation.x <= vehicle.x + vehicleWidth
-        )
-        return true
-        
-    return false
-}
-
-function isFrogHit2(vehicle, vehicleWidth, vehicleHeight) {
-    
-    
+function isFrogHit(vehicle, vehicleWidth, vehicleHeight) {
     if (frogLocation.y >= vehicle.y && 
         frogLocation.y + frogShowHeight <= vehicle.y + vehicleHeight &&
         frogLocation.x + frogShowWidth >= vehicle.x &&
         frogLocation.x <= vehicle.x + vehicleWidth
-        ) 
+        )
         return true
         
     return false

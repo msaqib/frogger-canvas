@@ -11,7 +11,6 @@ img2.src = 'assets/frogger.png'
 const img3 = new Image()
 img3.src = 'assets/logs.png'
 
-
 let frogLocation = {
     x: 400,
     y: 520
@@ -173,7 +172,28 @@ function handleKey(e) {
 function animate2() {
     ctx2.clearRect(0, 0, CANWIDTH, CANHEIGHT)
     
+    logLocations.forEach(location => ctx2.drawImage(img3, logX, logY, logWidth, logHeight, location.x, location.y, logShowWidth, logShowHeight))
+
+    logLocations = logLocations.map((location, index) => {
+        
+        let newLocation = location
+        if (Math.floor(index/6) === 0) {
+            if(isFrogOnLog(location)) {
+                frogLocation.x += logSpeed
+            }
+            newLocation.x = newLocation.x + logSpeed > CANWIDTH ? -logShowWidth : newLocation.x + logSpeed
+        }
+        else {
+            if(isFrogOnLog(location)) {
+                frogLocation.x -= logSpeed
+                //console.log(location.x, frogLocation.x, logSpeed)
+            }
+            newLocation.x = newLocation.x - logSpeed < -logShowWidth ? CANWIDTH : newLocation.x - logSpeed
+        }
+        return newLocation
+    })
     ctx2.drawImage(img2, frogX, frogY, frogWidth, frogHeight, frogLocation.x, frogLocation.y, frogShowWidth, frogShowHeight)
+
     row1.forEach( car => ctx2.drawImage(img1, car1X, car1Y, car1Width, car1Height, car.x, car.y, car1ShowWidth, car1ShowHeight))
     
     ctx2.save()
@@ -208,19 +228,22 @@ function animate2() {
     row5 = row5.map((truck) => incrementCheckAndReset(truck, speed3, truckShowWidth))
     row6 = row6.map((truck) => incrementCheckAndReset(truck, speed3, truckShowWidth))
 
-    logLocations.forEach(location => ctx2.drawImage(img3, logX, logY, logWidth, logHeight, location.x, location.y, logShowWidth, logShowHeight))
-
-    logLocations = logLocations.map((location, index) => {
-        
-        let newLocation = location
-        if (Math.floor(index/6) === 0) {
-            newLocation.x = newLocation.x + logSpeed > CANWIDTH ? -logShowWidth : newLocation.x + logSpeed
-        }
-        else {
-            newLocation.x = newLocation.x - logSpeed < -logShowWidth ? CANWIDTH : newLocation.x - logSpeed
-        }
-        return newLocation
-    })
+    if (isFrogDrowned()) 
+        return
+    if (isFrogWon())
+        return
+    if (row1.some((car) => isFrogHit1(car, car1ShowWidth, car1ShowHeight)))
+        return
+    if (row2.some((car) => isFrogHit2(convertCoord(car, car1ShowWidth, car1ShowHeight), car1ShowWidth, car1ShowHeight)))
+        return
+    if (row3.some((car) => isFrogHit1(car, car2ShowWidth, car2ShowHeight)))
+        return
+    if (row4.some((car) => isFrogHit2(convertCoord(car, car2ShowWidth, car2ShowHeight), car2ShowWidth, car2ShowHeight)))
+        return
+    if (row5.some((truck) => isFrogHit1(truck, truckShowWidth, truckShowHeight)))
+        return
+    if (row6.some((truck) => isFrogHit2(convertCoord(truck, truckShowWidth, truckShowHeight), truckShowWidth, truckShowHeight)))
+        return
     requestAnimationFrame(animate2)
     
 }
@@ -229,6 +252,70 @@ function incrementCheckAndReset(vehicle, speed, showWidth) {
     return {
         x: vehicle.x - speed < -showWidth ? CANWIDTH : vehicle.x - speed,
         y: vehicle.y
+    }
+}
+
+function isFrogOnLog(logLocation) {
+    if (
+        (frogLocation.y + frogShowHeight <= logLocation.y + logShowHeight) && 
+        (frogLocation.y >= logLocation.y) && 
+        (frogLocation.x >= logLocation.x) &&
+        (frogLocation.x <= logLocation.x + logShowWidth - frogShowWidth)
+        ){
+        return true
+    }
+        
+    else {
+        return false
+    }
+}
+
+function isFrogDrowned() {
+    if (frogLocation.y > 20 && frogLocation.y <= 240) {
+        if (!logLocations.some(location => isFrogOnLog(location))) {
+            return true
+        }
+    }
+    else
+        return false
+}
+
+function isFrogWon() {
+    if (frogLocation.y < 20) {
+        return true
+    }
+    else
+        return false
+}
+
+function isFrogHit1(vehicle, vehicleWidth, vehicleHeight) {
+    if (frogLocation.y >= vehicle.y && 
+        frogLocation.y + frogShowHeight <= vehicle.y + vehicleHeight &&
+        frogLocation.x + frogShowWidth - 2 >= vehicle.x &&
+        frogLocation.x <= vehicle.x + vehicleWidth
+        )
+        return true
+        
+    return false
+}
+
+function isFrogHit2(vehicle, vehicleWidth, vehicleHeight) {
+    
+    
+    if (frogLocation.y >= vehicle.y && 
+        frogLocation.y + frogShowHeight <= vehicle.y + vehicleHeight &&
+        frogLocation.x + frogShowWidth >= vehicle.x &&
+        frogLocation.x <= vehicle.x + vehicleWidth
+        ) 
+        return true
+        
+    return false
+}
+
+function convertCoord(vehicle, vehicleWidth, vehicleHeight) {
+    return {
+        x: CANWIDTH - vehicle.x - vehicleWidth,
+        y: CANHEIGHT - vehicle.y - vehicleHeight
     }
 }
 

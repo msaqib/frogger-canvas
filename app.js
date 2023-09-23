@@ -1,3 +1,9 @@
+const pBar = document.querySelector('.progress')
+
+let progress = 0
+const TIMELIMIT = 2000
+let pTimer = null
+
 const cvs2 = document.getElementById('frogger-canvas')
 const ctx2 = cvs2.getContext('2d')
 
@@ -177,7 +183,7 @@ function animate2() {
     logLocations = logLocations.map((location, index) => {
         
         let newLocation = location
-        if (Math.floor(index/6) === 0) {
+        if (index < 6) {
             if(isFrogOnLog(location)) {
                 frogLocation.x += logSpeed
             }
@@ -186,7 +192,6 @@ function animate2() {
         else {
             if(isFrogOnLog(location)) {
                 frogLocation.x -= logSpeed
-                //console.log(location.x, frogLocation.x, logSpeed)
             }
             newLocation.x = newLocation.x - logSpeed < -logShowWidth ? CANWIDTH : newLocation.x - logSpeed
         }
@@ -243,6 +248,8 @@ function animate2() {
     if (row5.some((truck) => isFrogHit(truck, truckShowWidth, truckShowHeight)))
         return
     if (row6.some((truck) => isFrogHit(convertCoord(truck, truckShowWidth, truckShowHeight), truckShowWidth, truckShowHeight)))
+        return
+    if (progress >= TIMELIMIT)
         return
     requestAnimationFrame(animate2)
     
@@ -305,5 +312,36 @@ function convertCoord(vehicle, vehicleWidth, vehicleHeight) {
         y: CANHEIGHT - vehicle.y - vehicleHeight
     }
 }
+
+function updateTimer() {
+    progress += 1
+    const percentage = ((progress) / TIMELIMIT) * 100
+    pBar.style.width = percentage + '%'
+    if(progress < TIMELIMIT && !isFrogWon())
+        pTimer = setTimeout(updateTimer, 20)
+}
+
+updateTimer()
+// const progressBarEl = document.querySelector(".progress");
+ 
+// let remainingTime = 60; // seconds
+// const totalTime = remainingTime;
+ 
+// function countdown() {
+//   if (remainingTime > 0) {
+ 
+//     // update progress bar
+//     const progress = ((totalTime - remainingTime) / totalTime) * 100;
+//     progressBarEl.style.width = `${progress}%`;
+ 
+//     remainingTime--;
+//     setTimeout(countdown, 1000);
+//   } else {
+//     // countdown finished
+//     progressBarEl.style.width = "100%";
+//   }
+// }
+ 
+//countdown();
 
 animate2()

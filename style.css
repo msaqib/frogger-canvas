@@ -6,9 +6,10 @@ body {
 .game-container {
     width: 800px;
     height: 540px;
-    position: relative;
     margin: 0 auto;
     margin-top: 10px;
+    position: relative;
+    top: 10px;
 }
 
 .blue-background {
@@ -40,4 +41,22 @@ body {
     top: 0;
     left: 0;
     z-index: 1; /* Place the canvas above the background */
+}
+
+.progress-bar {
+  width: 300px;
+  height: 20px;
+  background-color: #f2f2f2;
+  position: relative;
+  top: 10px;
+  margin: 0 auto;
+}
+ 
+.progress {
+  height: 100%;
+  background-color: #4caf50;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
 }
